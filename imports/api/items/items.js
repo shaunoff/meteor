@@ -2,13 +2,40 @@ import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
 
 const Items = new Mongo.Collection('items');
-export default Items;
+
+
+Items.allow({
+  insert: () => false,
+  update: () => false,
+  remove: () => false,
+});
+
+Items.deny({
+  insert: () => true,
+  update: () => true,
+  remove: () => true,
+});
 
 const ItemSchema = new SimpleSchema({
-  name: String,
-
+  userId: {
+    type: String,
+    label: 'The ID of the owner of this file.',
+  },
+  url: {
+    type: String,
+    label: 'The Amazon S3 URL for this file.',
+  },
+  fileName: {
+    type: String,
+    label: 'The original name for this file.',
+  },
+  added: {
+    type: Date,
+    label: 'date added',
+  }
 });
 
 
 
 Items.attachSchema(ItemSchema);
+export default Items;

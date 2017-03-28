@@ -3,8 +3,8 @@ import { createContainer } from 'meteor/react-meteor-data';
 import { autobind } from 'core-decorators';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 
-import Item from './Item';
-
+import Item from './components/Item';
+import Uploader from './components/Uploader'
 import Items from '../api/items/items';
 
 @autobind
@@ -21,7 +21,7 @@ class App extends Component {
         }
       });
     }
-  
+
 
   render() {
     if (!this.props.ready) {
@@ -29,18 +29,17 @@ class App extends Component {
     }
     const test = true;
     return (
-      <main>
+      <div style={{display: 'flex', justifyContent: 'center'}}>
+      <main style={{width:"800px"}}>
 
-        <form className='new-items' onSubmit={this.addItems}>
-          <input type='text' ref='item' />
-          <button type='submit'>Add Items</button>
-        </form>
-
+        <Uploader/>
+          <div style={{display: 'flex', flexDirection: 'column'}}>
           {this.props.items.map((item) => {
             return <Item item={item} key={item._id}/>
           })}
-
+        </div>
       </main>
+    </div>
     );
   }
 }
@@ -49,7 +48,7 @@ export default createContainer(({params}) => {
   let itemsSub = Meteor.subscribe('allItems');
 
 
-  let itemsArray = Items.find({}).fetch();
+  let itemsArray = Items.find({}, {sort: {'added': -1}}).fetch();
 
   return {
     ready: itemsSub.ready(),
